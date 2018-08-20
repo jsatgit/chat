@@ -7,7 +7,10 @@ var io = require('socket.io')(server);
 const messages = [];
 
 function loadHistory(socket) {
-    socket.emit('load', messages);
+    socket.emit('load', {
+        id: socket.id,
+        messages
+    });
 }
 
 function storeHistory(line) {

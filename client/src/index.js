@@ -24,6 +24,7 @@ function formatLine({sender, message}) {
 
 class App extends React.PureComponent {
     state = {
+        id: null,
         inputValue: "",
         messages: List(),
     }
@@ -54,8 +55,11 @@ class App extends React.PureComponent {
         })  
     }
 
-    onLoad = (messages) => {
-        this.setState({messages: List(messages.map(formatLine))})
+    onLoad = ({id, messages}) => {
+        this.setState({
+            id,
+            messages: List(messages.map(formatLine))
+        })
     }
 
     componentDidMount() {
@@ -77,7 +81,7 @@ class App extends React.PureComponent {
                     ))}
                 </Output>
                 <Input>
-                    What is on your mind 
+                    {`${this.state.id} `}
                     <input 
                         onChange={this.onInputChange}
                         onKeyPress={this.onKeyPress}
