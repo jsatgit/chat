@@ -43,13 +43,16 @@ class App extends React.PureComponent {
         }
     }
 
+    onMessage = ({sender, message}) => {
+        const text = `${sender}: ${message}`;
+        this.setState({messages: this.state.messages.push(text)}, () => {
+            this.scrollToBottom();
+        })  
+    }
+
     componentDidMount() {
         this.socket = io();
-        this.socket.on('message', msg => {
-            this.setState({messages: this.state.messages.push(msg)}, () => {
-                this.scrollToBottom();
-            })  
-        });
+        this.socket.on('message', this.onMessage);
     }
 
 	render() {
@@ -58,9 +61,9 @@ class App extends React.PureComponent {
                 <Output
                     ref={outputElement => this.outputElement = outputElement}
                 >
-                    {this.state.messages.map((msg, index) => (
+                    {this.state.messages.map((message, index) => (
                         <div key={index}>
-                            {msg}
+                            {message}
                         </div>
                     ))}
                 </Output>

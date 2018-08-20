@@ -5,15 +5,18 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 io.on('connection', function(socket){ 
-    console.log("user connected");
+    console.log(`${socket.id} connected`);
 
     socket.on('disconnect', function(){
-        console.log('user disconnected');
+        console.log(`${socket.id} disconnected`);
     });
 
-    socket.on('message', function(msg){
-        console.log('message: ' + msg);
-        io.emit('message', msg);
+    socket.on('message', function(message){
+        console.log(`${socket.id}: ${message}`);
+        io.emit('message', {
+            sender: socket.id,
+            message,
+        });
     });
 });
 
