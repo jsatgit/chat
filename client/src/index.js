@@ -7,15 +7,15 @@ import styled from 'styled-components';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+    height: 100%;
 `;
 
 const Output = styled.div`
-    flex-grow: 1;
-    overflow: auto;
+    height: 100%;
+    overflow-y: scroll;
 `;
 
 const Input = styled.div`
-   flex-shrink: 0;
 `;
 
 class App extends React.PureComponent {
@@ -36,17 +36,28 @@ class App extends React.PureComponent {
         }
     }
 
+    scrollToBottom() {
+        const outputElement = ReactDOM.findDOMNode(this.outputElement);
+        if (outputElement) {
+            outputElement.scrollTop = outputElement.scrollHeight;
+        }
+    }
+
     componentDidMount() {
         this.socket = io();
         this.socket.on('message', msg => {
-            this.setState({messages: this.state.messages.push(msg)})  
+            this.setState({messages: this.state.messages.push(msg)}, () => {
+                this.scrollToBottom();
+            })  
         });
     }
 
 	render() {
         return (
             <Container>
-                <Output>
+                <Output
+                    ref={outputElement => this.outputElement = outputElement}
+                >
                     {this.state.messages.map((msg, index) => (
                         <div key={index}>
                             {msg}
