@@ -18,6 +18,10 @@ const Output = styled.div`
 const Input = styled.div`
 `;
 
+function formatLine({sender, message}) {
+    return `${sender}: ${message}`;
+}
+
 class App extends React.PureComponent {
     state = {
         inputValue: "",
@@ -43,16 +47,21 @@ class App extends React.PureComponent {
         }
     }
 
-    onMessage = ({sender, message}) => {
-        const text = `${sender}: ${message}`;
+    onMessage = (line) => {
+        const text = formatLine(line);
         this.setState({messages: this.state.messages.push(text)}, () => {
             this.scrollToBottom();
         })  
     }
 
+    onLoad = (messages) => {
+        this.setState({messages: List(messages.map(formatLine))})
+    }
+
     componentDidMount() {
         this.socket = io();
         this.socket.on('message', this.onMessage);
+        this.socket.on('load', this.onLoad);
     }
 
 	render() {
