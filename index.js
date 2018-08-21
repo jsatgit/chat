@@ -8,7 +8,6 @@ const messages = [];
 
 function loadHistory(socket) {
     socket.emit('load', {
-        id: socket.id,
         messages
     });
 }
@@ -25,10 +24,10 @@ io.on('connection', function(socket){
         console.log(`${socket.id} disconnected`);
     });
 
-    socket.on('message', function(message){
-        console.log(`${socket.id}: ${message}`);
+    socket.on('message', function({sender, message}){
+        console.log(`${sender}: ${message}`);
         const line = {
-            sender: socket.id,
+            sender,
             message,
         };
         storeHistory(line);

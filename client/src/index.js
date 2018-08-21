@@ -27,6 +27,7 @@ class App extends React.PureComponent {
         id: null,
         inputValue: "",
         messages: List(),
+        signupPage: true,
     }
 
     onInputChange = (event) => {
@@ -36,7 +37,7 @@ class App extends React.PureComponent {
     onKeyPress = (event) => {
         if (event.key === 'Enter') {
             const val = this.state.inputValue;
-            this.socket.emit('message', val)
+            this.socket.emit('message', {sender: this.state.id, message: val})
             this.setState({inputValue: ""})
         }
     }
@@ -55,11 +56,8 @@ class App extends React.PureComponent {
         })  
     }
 
-    onLoad = ({id, messages}) => {
-        this.setState({
-            id,
-            messages: List(messages.map(formatLine))
-        })
+    onLoad = ({messages}) => {
+        this.setState({ messages: List(messages.map(formatLine)) })
     }
 
     componentDidMount() {
@@ -68,7 +66,28 @@ class App extends React.PureComponent {
         this.socket.on('load', this.onLoad);
     }
 
+    onUsernameKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            this.setState({id: event.target.value, signupPage: false});
+        }
+    }
+
+    renderSignupPage() {
+        return (
+            <div>
+                Pick your username
+                <input 
+                    onKeyPress={this.onUsernameKeyPress}
+                />
+            </div>
+        );
+    }
+
 	render() {
+        if (this.state.signupPage) {
+            return this.renderSignupPage()
+        }
+
         return (
             <Container>
                 <Output
