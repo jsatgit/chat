@@ -60,15 +60,23 @@ class App extends React.PureComponent {
         this.setState({ messages: List(messages.map(formatLine)) })
     }
 
+    onJoin = user => {
+        const text = `${user} joined the chat.`
+        this.setState({ messages: this.state.messages.push(text) })
+    }
+
     componentDidMount() {
         this.socket = io();
         this.socket.on('message', this.onMessage);
         this.socket.on('load', this.onLoad);
+        this.socket.on('join', this.onJoin);
     }
 
     onUsernameKeyPress = (event) => {
         if (event.key === 'Enter') {
-            this.setState({id: event.target.value, signupPage: false});
+            const user = event.target.value;
+            this.setState({id: user, signupPage: false});
+            this.socket.emit('join', user);
         }
     }
 

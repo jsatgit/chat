@@ -45,6 +45,11 @@ io.on('connection', function(socket){
         storeHistory(line);
         io.emit('message', line);
     });
+
+    socket.on('join', function(user){
+        console.log(`${user} joined`);
+        io.emit('join', user);
+    });
 });
 
 app.use(express.static('dist'))
