@@ -7,13 +7,25 @@ var io = require('socket.io')(server);
 const messages = [];
 
 function loadHistory(socket) {
-    socket.emit('load', {
-        messages
-    });
+    db.any('SELECT message, sender FROM messages')
+      .then(function (messages) {
+        socket.emit('load', {
+            messages
+        });
+      })
+      .catch(function (error) {
+        console.log('ERROR:', error)
+      })
 }
 
 function storeHistory(line) {
-    messages.push(line);
+    db.none('INSERT INTO messages(message, sender) VALUES($1, $2)', [line.message, line.sender])
+    .then(() => {
+        // success;
+    })
+    .catch(error => {
+        console.log("error inserting", error)
+    });
 }
 
 io.on('connection', function(socket){ 
@@ -40,5 +52,9 @@ app.use(express.static('dist'))
 app.get("/", function(req, res) {
    res.send("Hello world!");
 });
+
+var pgp = require('pg-promise')(/*options*/)
+var db = pgp('postgres://postgres:mysecretpassword@localhost:5432/mytestdb')
+
 
 server.listen(3000);
