@@ -12,11 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
+    "google-auth-library": "^1.6.1",
     "immutable": "^3.8.2",
+    "js-cookie": "^2.2.0",
     "parcel": "^1.9.7",
     "pg-promise": "^8.4.6",
     "react": "^16.0.0",
     "react-dom": "^16.4.2",
+    "react-google-login": "^3.2.1",
     "socket.io": "^2.1.1",
     "styled-components": "^3.4.2",
     "yarn": "^1.9.4"
