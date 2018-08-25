@@ -7,14 +7,35 @@ import { GoogleLogin } from 'react-google-login';
 import Cookies from 'js-cookie';
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
+    display: grid; 
+    width: 100%;
     height: 100%;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 75px 1fr 75px;
+    grid-template-areas:
+    "navigation header"
+    "navigation content"
+    "navigation footer";
+`;
+
+const Header = styled.div`
+    grid-area: header;
+`;
+
+const Footer = styled.div`
+    grid-area: footer;
+`;
+
+const Content = styled.div`
+    grid-area: content;
+    overflow-y: scroll;
+`;
+
+const Navigation= styled.div`
+     grid-area: navigation;
 `;
 
 const Output = styled.div`
-    height: 100%;
-    overflow-y: scroll;
 `;
 
 const Input = styled.div`
@@ -127,23 +148,25 @@ class App extends React.PureComponent {
 
         return (
             <Container>
-                <Output
-                    ref={outputElement => this.outputElement = outputElement}
-                >
+                <Header>
+                </Header>
+                <Navigation>
+                </Navigation>
+                <Content ref={outputElement => this.outputElement = outputElement} >
                     {this.state.messages.map((message, index) => (
                         <div key={index}>
                             {message}
                         </div>
                     ))}
-                </Output>
-                <Input>
+                </Content>
+                <Footer>
                     {`${this.state.id} `}
                     <input 
                         onChange={this.onInputChange}
                         onKeyPress={this.onKeyPress}
                         value={this.state.inputValue}
                     />
-                </Input>
+                </Footer>
             </Container>
         );
 	}
