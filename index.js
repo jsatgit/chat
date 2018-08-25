@@ -8,7 +8,7 @@ const {OAuth2Client} = require('google-auth-library');
 const messages = [];
 
 function loadHistory(socket) {
-    db.any('SELECT message, sender FROM messages')
+    db.any('SELECT message, sender FROM chat')
       .then(function (messages) {
         socket.emit('load', {
             messages
@@ -20,7 +20,7 @@ function loadHistory(socket) {
 }
 
 function storeHistory(line) {
-    db.none('INSERT INTO messages(message, sender) VALUES($1, $2)', [line.message, line.sender])
+    db.none('INSERT INTO chat(message, sender) VALUES($1, $2)', [line.message, line.sender])
     .then(() => {
         // success;
     })
@@ -65,8 +65,8 @@ io.on('connection', function(socket){
             console.log(`${name} joined`);
             socket.emit('login', {name, token});
             io.emit('join', name);
-        } catch {
-            console.log(`unable to verify token ${token}`)
+        } catch(err) {
+            console.log(`unable to verify token ${token}, ${err}`)
         }
     });
 });
@@ -78,7 +78,7 @@ app.get("/", function(req, res) {
 });
 
 var pgp = require('pg-promise')(/*options*/)
-var db = pgp('postgres://postgres:mysecretpassword@localhost:5432/mytestdb')
+var db = pgp('postgres://postgres:pass@localhost:5432/chatdb')
 
 
 server.listen(3000);
