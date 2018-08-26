@@ -52,6 +52,8 @@ class App extends React.PureComponent {
         messages: List(),
         signupPage: false,
         authenticating: true,
+        rooms: List(),
+        currentRoom: 'main',
     }
 
     onInputChange = (event) => {
@@ -61,7 +63,11 @@ class App extends React.PureComponent {
     onKeyPress = (event) => {
         if (event.key === 'Enter') {
             const val = this.state.inputValue;
-            this.socket.emit('message', {sender: this.state.id, message: val})
+            this.socket.emit('message', {
+                room: this.state.currentRoom,
+                sender: this.state.id,
+                message: val,
+            })
             this.setState({inputValue: ""})
         }
     }
@@ -89,12 +95,17 @@ class App extends React.PureComponent {
         this.setState({ messages: this.state.messages.push(text) })
     }
 
+    onLoadRooms = rooms => {
+        this.setState({rooms: List(rooms)});
+    }
+
     componentDidMount() {
         this.socket = io();
         this.socket.on('message', this.onMessage);
         this.socket.on('load', this.onLoad);
         this.socket.on('join', this.onJoin);
         this.socket.on('login', this.onLoginSuccess);
+        this.socket.on('loadRooms', this.onLoadRooms);
 
         const token = Cookies.get('token');
         if (token) {
@@ -104,15 +115,10 @@ class App extends React.PureComponent {
         }
     }
 
-    onUsernameKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            const user = event.target.value;
-        }
-    }
-
     onLoginSuccess = ({name, token}) => {
         Cookies.set('token', token, { expires: 1 });
         this.setState({id: name, authenticating: false, signupPage: false});
+        this.socket.emit('joinRoom', null, this.state.currentRoom);
     }
 
     join(token) {
@@ -137,6 +143,18 @@ class App extends React.PureComponent {
         );
     }
 
+    onAddRoomKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            const roomName = event.target.value;
+            this.socket.emit('addRoom', roomName);
+        }
+    }
+
+    onRoomClick = (name) => {
+        this.socket.emit('joinRoom', this.state.currentRoom, name);
+        this.setState({currentRoom: name});
+    }
+
 	render() {
         if (this.state.authenticating) {
             return <div>Loading</div>;
@@ -151,6 +169,12 @@ class App extends React.PureComponent {
                 <Header>
                 </Header>
                 <Navigation>
+                    Add room <input onKeyPress={this.onAddRoomKeyPress} />
+                    {this.state.rooms.map((room, index) => (
+                        <div key={index} onClick={() => this.onRoomClick(room.name)}>
+                            {room.name}
+                        </div>
+                    ))}
                 </Navigation>
                 <Content ref={outputElement => this.outputElement = outputElement} >
                     {this.state.messages.map((message, index) => (

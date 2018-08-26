@@ -1,0 +1,3 @@
+CREATE TABLE room (
+    name TEXT PRIMARY KEY
+);
