@@ -1,0 +1,26 @@
+{
+    "name": "chat",
+    "version": "1.0.0",
+    "description": "frontend for chat application",
+    "main": "src/index.js",
+    "scripts": {
+        "build": "parcel build index.html",
+        "start": "parcel index.html"
+    },
+    "author": "James Shi",
+    "license": "ISC",
+    "dependencies": {
+        "immutable": "^3.8.2",
+        "js-cookie": "^2.2.0",
+        "react": "^16.0.0",
+        "react-dom": "^16.4.2",
+        "react-google-login": "^3.2.1",
+        "socket.io": "^2.1.1",
+        "styled-components": "^3.4.2"
+    },
+    "devDependencies": {
+        "parcel": "^1.9.7",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0"
+    }
+}

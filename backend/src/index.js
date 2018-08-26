@@ -110,7 +110,7 @@ io.on('connection', function(socket){
 
 });
 
-app.use(express.static('dist'))
+app.use(express.static('public'))
 
 app.get("/", function(req, res) {
    res.send("Hello world!");
