@@ -1,3 +1,4 @@
 CREATE TABLE room (
-    name TEXT PRIMARY KEY
+    id      SERIAL PRIMARY KEY,
+    name    TEXT 
 );
