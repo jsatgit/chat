@@ -3,11 +3,11 @@ import io from 'socket.io-client';
 import styled from 'styled-components';
 import { List } from 'immutable';
 
-import Nav from './navigation';
 import {RoomContext, ChatContext} from './context';
-import Cont from './content';
-import Foot from './footer';
-import Head from './header';
+import Navigation from './navigation';
+import Content from './content';
+import Footer from './footer';
+import Header from './header';
 import { post } from './api';
 
 const Container = styled.div`
@@ -22,20 +22,20 @@ const Container = styled.div`
     "navigation footer";
 `;
 
-const Header = styled.div`
+const HeaderContainer = styled.div`
     grid-area: header;
 `;
 
-const Footer = styled.div`
+const FooterContainer = styled.div`
     grid-area: footer;
 `;
 
-const Content = styled.div`
+const ContentContainer = styled.div`
     grid-area: content;
     overflow-y: hidden;
 `;
 
-const Navigation= styled.div`
+const NavigationContainer = styled.div`
      grid-area: navigation;
 `;
 
@@ -112,18 +112,18 @@ export default class Chat extends React.PureComponent {
             <RoomContext.Provider value={this.getRoomContext()} >
                 <ChatContext.Provider value={this.getChatContext()} >
                     <Container>
-                        <Header>
-                            <Head />
-                        </Header>
-                        <Navigation>
-                            <Nav />
-                        </Navigation>
-                        <Content ref={outputElement => this.outputElement = outputElement} >
-                            <Cont />
-                        </Content>
-                        <Footer>
-                            <Foot />
-                        </Footer>
+                        <HeaderContainer>
+                            <Header />
+                        </HeaderContainer>
+                        <NavigationContainer>
+                            <Navigation />
+                        </NavigationContainer>
+                        <ContentContainer>
+                            <Content />
+                        </ContentContainer>
+                        <FooterContainer>
+                            <Footer />
+                        </FooterContainer>
                     </Container>
                 </ChatContext.Provider>
             </RoomContext.Provider>
