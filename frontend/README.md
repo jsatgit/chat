@@ -1,7 +1,7 @@
 ## Setup
 
 ```
-    npm install --production
+    npm install -D
     npm run build
 ```
 
