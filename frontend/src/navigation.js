@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import Input from './input';
-import { withContext, RoomContext } from './context';
+import Input from "./input";
+import { withContext, RoomContext } from "./context";
 
 class Navigation extends React.PureComponent {
     render() {

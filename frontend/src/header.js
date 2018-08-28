@@ -1,15 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import { withContext, RoomContext } from './context';
+import { withContext, RoomContext } from "./context";
 
 class Header extends React.PureComponent {
     render() {
         const { currentRoom } = this.props;
-        return (
-            <div>
-                { currentRoom && currentRoom.name }
-            </div>
-        );
+        return <div>{currentRoom && currentRoom.name}</div>;
     }
 }
 

@@ -1,25 +1,25 @@
-import React from 'react';
-import io from 'socket.io-client';
-import styled from 'styled-components';
-import { List } from 'immutable';
+import React from "react";
+import io from "socket.io-client";
+import styled from "styled-components";
+import { List } from "immutable";
 
-import {RoomContext, ChatContext} from './context';
-import Navigation from './navigation';
-import Content from './content';
-import Footer from './footer';
-import Header from './header';
-import { post } from './api';
+import { RoomContext, ChatContext } from "./context";
+import Navigation from "./navigation";
+import Content from "./content";
+import Footer from "./footer";
+import Header from "./header";
+import { post } from "./api";
 
 const Container = styled.div`
-    display: grid; 
+    display: grid;
     width: 100%;
     height: 100%;
     grid-template-columns: 200px 1fr;
     grid-template-rows: 75px 1fr 75px;
     grid-template-areas:
-    "navigation header"
-    "navigation content"
-    "navigation footer";
+        "navigation header"
+        "navigation content"
+        "navigation footer";
 `;
 
 const HeaderContainer = styled.div`
@@ -36,44 +36,44 @@ const ContentContainer = styled.div`
 `;
 
 const NavigationContainer = styled.div`
-     grid-area: navigation;
+    grid-area: navigation;
 `;
 
 export default class Chat extends React.PureComponent {
-    addRoom = async (name) => {
-        const response = await post('/api/room', { name});
+    addRoom = async name => {
+        const response = await post("/api/room", { name });
         const room = await response.json();
-        this.setState({rooms: this.state.rooms.push(room)})
-    }
+        this.setState({ rooms: this.state.rooms.push(room) });
+    };
 
     addMessage = (message, username) => {
-        this.socket.emit('message', {
+        this.socket.emit("message", {
             room: this.state.currentRoom.id,
             sender: username,
-            message,
+            message
         });
-    }
+    };
 
-    switchRoom = async (room) => {
-        const chat = await this.fetchChat(room.id)
-        this.setState({chat: List(chat), currentRoom: room});
-        this.socket.emit('joinRoom', {
+    switchRoom = async room => {
+        const chat = await this.fetchChat(room.id);
+        this.setState({ chat: List(chat), currentRoom: room });
+        this.socket.emit("joinRoom", {
             previousRoom: this.state.currentRoom,
-            currentRoom: room, 
-        })
-    }
-    
+            currentRoom: room
+        });
+    };
+
     state = {
         rooms: List(),
         chat: List(),
         currentRoom: null,
         addRoom: this.addRoom,
         switchRoom: this.switchRoom,
-        addMessage: this.addMessage,
-    }
+        addMessage: this.addMessage
+    };
 
     async fetchRooms() {
-        const response = await fetch('/api/rooms');
+        const response = await fetch("/api/rooms");
         const rooms = await response.json();
         return rooms;
     }
@@ -84,22 +84,22 @@ export default class Chat extends React.PureComponent {
         return chat;
     }
 
-    onMessage = (chat) => {
-        this.setState({chat: this.state.chat.push(chat)})
-    }
+    onMessage = chat => {
+        this.setState({ chat: this.state.chat.push(chat) });
+    };
 
     async componentDidMount() {
         this.socket = io();
-        this.socket.on('message', this.onMessage);
+        this.socket.on("message", this.onMessage);
         const rooms = await this.fetchRooms();
         const [room] = rooms;
         this.switchRoom(room);
-        this.setState({rooms: List(rooms)});
+        this.setState({ rooms: List(rooms) });
     }
 
     getRoomContext() {
         const { rooms, currentRoom, addRoom, switchRoom } = this.state;
-        return { rooms, currentRoom, addRoom, switchRoom};
+        return { rooms, currentRoom, addRoom, switchRoom };
     }
 
     getChatContext() {
@@ -109,8 +109,8 @@ export default class Chat extends React.PureComponent {
 
     render() {
         return (
-            <RoomContext.Provider value={this.getRoomContext()} >
-                <ChatContext.Provider value={this.getChatContext()} >
+            <RoomContext.Provider value={this.getRoomContext()}>
+                <ChatContext.Provider value={this.getChatContext()}>
                     <Container>
                         <HeaderContainer>
                             <Header />

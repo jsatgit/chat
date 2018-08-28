@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
+import React from "react";
+import ReactDOM from "react-dom";
+import styled from "styled-components";
 
-import { ChatContext, withContext } from './context';
+import { ChatContext, withContext } from "./context";
 
-function formatChat({sender, message}) {
+function formatChat({ sender, message }) {
     return `${sender}: ${message}`;
 }
 
@@ -28,11 +28,9 @@ class Content extends React.PureComponent {
     render() {
         const { chat } = this.props;
         return (
-            <Container ref={element => this.element = element}>
+            <Container ref={element => (this.element = element)}>
                 {chat.map((chat, index) => (
-                    <div key={index}>
-                        {formatChat(chat)}
-                    </div>
+                    <div key={index}>{formatChat(chat)}</div>
                 ))}
             </Container>
         );

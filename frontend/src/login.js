@@ -1,41 +1,41 @@
-import React from 'react';
-import { GoogleLogin } from 'react-google-login';
-import { Redirect } from 'react-router';
-import Cookies from 'js-cookie';
+import React from "react";
+import { GoogleLogin } from "react-google-login";
+import { Redirect } from "react-router";
+import Cookies from "js-cookie";
 
-import { post } from './api';
-import { withContext, UserContext } from './context';
+import { post } from "./api";
+import { withContext, UserContext } from "./context";
 
 class Login extends React.PureComponent {
     state = {
-        authenticated: false,
-    }
+        authenticated: false
+    };
 
     onLogin = async (googleUser, updateUser) => {
         const token = googleUser.getAuthResponse().id_token;
         this.authenticate(token);
-    }
+    };
 
     async authenticate(token) {
-        const response = await post('/api/login', {token});
+        const response = await post("/api/login", { token });
         if (response.ok) {
             const user = await response.json();
-            Cookies.set('chat-token', token, { expires: 1 });
+            Cookies.set("chat-token", token, { expires: 1 });
             this.props.updateUser(user);
-            this.setState({authenticated: true});
+            this.setState({ authenticated: true });
         }
     }
 
     componentDidMount() {
-        const token = Cookies.get('chat-token')
+        const token = Cookies.get("chat-token");
         if (token) {
-            this.authenticate(token)
+            this.authenticate(token);
         }
     }
 
     render() {
         if (this.state.authenticated) {
-            return <Redirect to='/chat' />
+            return <Redirect to="/chat" />;
         }
 
         return (

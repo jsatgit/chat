@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export const UserContext = React.createContext();
 export const ChatContext = React.createContext();
@@ -10,6 +10,6 @@ export function withContext(Context, Component) {
             <Context.Consumer>
                 {value => <Component {...props} {...value} />}
             </Context.Consumer>
-        )
-    }
+        );
+    };
 }
