@@ -1,24 +1,24 @@
-const { getRooms, createRoom, getChat } = require('./db');
-const app = require('./app');
-const { verify } = require('./google');
-const bodyParser = require('body-parser');
-const express = require('express');
+const { getRooms, createRoom, getChat } = require("./db");
+const app = require("./app");
+const { verify } = require("./google");
+const bodyParser = require("body-parser");
+const express = require("express");
 
-app.use(bodyParser.json())
-app.use(express.static('public'))
+app.use(bodyParser.json());
+app.use(express.static("public"));
 
 app.get("/", function(req, res) {
-   res.send("Welcome to chat!");
+    res.send("Welcome to chat!");
 });
 
 app.post("/api/login", async function(req, res) {
     if (!req.body) {
-        return res.sendStatus(400)
+        return res.sendStatus(400);
     }
 
     const token = req.body.token;
     if (!token) {
-        return res.sendStatus(400)
+        return res.sendStatus(400);
     }
 
     try {
@@ -26,36 +26,35 @@ app.post("/api/login", async function(req, res) {
         const payload = ticket.getPayload();
         const name = payload.name;
         console.log(`${name} logged in`);
-        const user = { name }
-        res.setHeader('Content-Type', 'application/json');
+        const user = { name };
+        res.setHeader("Content-Type", "application/json");
         res.send(JSON.stringify(user));
-    } catch(err) {
+    } catch (err) {
         console.error(err);
-        return res.sendStatus(401)
+        return res.sendStatus(401);
     }
-})
+});
 
 app.get("/api/rooms", async function(req, res) {
     const rooms = await getRooms();
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify(rooms));
-})
+});
 
 app.post("/api/room", async function(req, res) {
     if (!req.body) {
-        return res.sendStatus(400)
+        return res.sendStatus(400);
     }
 
     const name = req.body.name;
     if (!name) {
-        return res.sendStatus(400)
+        return res.sendStatus(400);
     }
 
     const room = await createRoom(name);
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify(room));
-})
-
+});
 
 app.get("/api/chat/:room", async function(req, res) {
     const room = req.params.room;
@@ -64,6 +63,6 @@ app.get("/api/chat/:room", async function(req, res) {
     }
 
     const chat = await getChat(room);
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify(chat));
-})
+});

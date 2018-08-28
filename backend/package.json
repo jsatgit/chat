@@ -4,7 +4,8 @@
     "description": "backend for chat",
     "main": "src/index.js",
     "scripts": {
-        "start": "node src/index.js"
+        "start": "node src/index.js",
+        "style": "prettier --write src/**/*.js"
     },
     "author": "James Shi",
     "license": "ISC",
@@ -15,5 +16,7 @@
         "pg-promise": "^8.4.6",
         "socket.io": "^2.1.1"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "prettier": "^1.14.2"
+    }
 }
