@@ -1,23 +1,22 @@
 import React from 'react';
 
 import Input from './input';
-import Context from './context';
+import { withContext, RoomContext } from './context';
 
-export default class Navigation extends React.PureComponent {
+class Navigation extends React.PureComponent {
     render() {
+        const { addRoom, rooms, switchRoom } = this.props;
         return (
-            <Context.Consumer>
-                {({addRoom, switchRoom}) => (
-                    <div>
-                        Add room <Input onSubmit={addRoom} />
-                        {this.props.rooms.map((room, index) => (
-                            <div key={index} onClick={() => switchRoom(room)}>
-                                {room.name}
-                            </div>
-                        ))}
+            <div>
+                Add room <Input onSubmit={addRoom} />
+                {rooms.map((room, index) => (
+                    <div key={index} onClick={() => switchRoom(room)}>
+                        {room.name}
                     </div>
-                )}
-            </Context.Consumer>
+                ))}
+            </div>
         );
     }
 }
+
+export default withContext(RoomContext, Navigation);

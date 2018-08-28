@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import Cookies from 'js-cookie';
 
 import { post } from './api';
-import { withUserContext } from './user-context';
+import { withContext, UserContext } from './context';
 
 class Login extends React.PureComponent {
     state = {
@@ -49,4 +49,4 @@ class Login extends React.PureComponent {
     }
 }
 
-export default withUserContext(Login);
+export default withContext(UserContext, Login);

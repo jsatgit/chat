@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
+import { ChatContext, withContext } from './context';
+
 function formatChat({sender, message}) {
     return `${sender}: ${message}`;
 }
@@ -11,7 +13,7 @@ const Container = styled.div`
     height: 100%;
 `;
 
-export default class Content extends React.PureComponent {
+class Content extends React.PureComponent {
     scrollToBottom() {
         const element = ReactDOM.findDOMNode(this.element);
         if (element) {
@@ -19,14 +21,15 @@ export default class Content extends React.PureComponent {
         }
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         this.scrollToBottom();
     }
 
     render() {
+        const { chat } = this.props;
         return (
             <Container ref={element => this.element = element}>
-                {this.props.chat.map((chat, index) => (
+                {chat.map((chat, index) => (
                     <div key={index}>
                         {formatChat(chat)}
                     </div>
@@ -35,3 +38,5 @@ export default class Content extends React.PureComponent {
         );
     }
 }
+
+export default withContext(ChatContext, Content);

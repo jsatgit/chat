@@ -1,5 +1,15 @@
 import React from 'react';
 
-const context = React.createContext();
+export const UserContext = React.createContext();
+export const ChatContext = React.createContext();
+export const RoomContext = React.createContext();
 
-export default context;
+export function withContext(Context, Component) {
+    return function ContextComponent(props) {
+        return (
+            <Context.Consumer>
+                {value => <Component {...props} {...value} />}
+            </Context.Consumer>
+        )
+    }
+}

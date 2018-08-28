@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { List } from 'immutable';
 
 import Nav from './navigation';
-import Context from './context';
+import {RoomContext, ChatContext} from './context';
 import Cont from './content';
 import Foot from './footer';
 import { post } from './api';
@@ -96,23 +96,35 @@ export default class Chat extends React.PureComponent {
         this.setState({rooms: List(rooms)});
     }
 
+    getRoomContext() {
+        const { rooms, currentRoom, addRoom, switchRoom } = this.state;
+        return { rooms, currentRoom, addRoom, switchRoom};
+    }
+
+    getChatContext() {
+        const { chat, addMessage } = this.state;
+        return { chat, addMessage };
+    }
+
     render() {
         return (
-            <Context.Provider value={this.state} >
-                <Container>
-                    <Header>
-                    </Header>
-                    <Navigation>
-                        <Nav rooms={this.state.rooms}/>
-                    </Navigation>
-                    <Content ref={outputElement => this.outputElement = outputElement} >
-                        <Cont key={this.state.chat} chat={this.state.chat} />
-                    </Content>
-                    <Footer>
-                        <Foot user={this.state.user}/>
-                    </Footer>
-                </Container>
-            </Context.Provider>
+            <RoomContext.Provider value={this.getRoomContext()} >
+                <ChatContext.Provider value={this.getChatContext()} >
+                    <Container>
+                        <Header>
+                        </Header>
+                        <Navigation>
+                            <Nav />
+                        </Navigation>
+                        <Content ref={outputElement => this.outputElement = outputElement} >
+                            <Cont />
+                        </Content>
+                        <Footer>
+                            <Foot />
+                        </Footer>
+                    </Container>
+                </ChatContext.Provider>
+            </RoomContext.Provider>
         );
     }
 }

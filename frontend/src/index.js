@@ -6,12 +6,10 @@ import { Route, Switch } from 'react-router'
 
 import Login from './login';
 import Chat from './chat';
-import UserContext from './user-context';
+import { UserContext } from './context';
 
 
 class App extends React.PureComponent {
-
-
     updateUser = (user) => {
         this.setState({user});
     }
