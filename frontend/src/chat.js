@@ -7,6 +7,7 @@ import Nav from './navigation';
 import {RoomContext, ChatContext} from './context';
 import Cont from './content';
 import Foot from './footer';
+import Head from './header';
 import { post } from './api';
 
 const Container = styled.div`
@@ -112,6 +113,7 @@ export default class Chat extends React.PureComponent {
                 <ChatContext.Provider value={this.getChatContext()} >
                     <Container>
                         <Header>
+                            <Head />
                         </Header>
                         <Navigation>
                             <Nav />
