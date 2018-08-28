@@ -25,12 +25,13 @@ app.post("/api/login", async function(req, res) {
         const ticket = await verify(token);
         const payload = ticket.getPayload();
         const name = payload.name;
-        console.log(`${name} logged in`);
         const user = { name };
+        
+        console.log(`${name} logged in`);
+
         res.setHeader("Content-Type", "application/json");
         res.send(JSON.stringify(user));
     } catch (err) {
-        console.error(err);
         return res.sendStatus(401);
     }
 });
