@@ -1,17 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
+import { Button, Comment, Form, Header } from "semantic-ui-react";
 
 import { ChatContext, withContext } from "./context";
-
-function formatChat({ sender, message }) {
-    return `${sender}: ${message}`;
-}
 
 const Container = styled.div`
     overflow-y: scroll;
     height: 100%;
+    margin-left: 20px;
 `;
+
+const formatChat = (chat, index) => (
+    <Comment key={index}>
+        <Comment.Content>
+            <Comment.Author as="a">{chat.sender}</Comment.Author>
+            <Comment.Text>{chat.message}</Comment.Text>
+        </Comment.Content>
+    </Comment>
+);
 
 class Content extends React.PureComponent {
     scrollToBottom() {
@@ -29,9 +36,7 @@ class Content extends React.PureComponent {
         const { chat } = this.props;
         return (
             <Container ref={element => (this.element = element)}>
-                {chat.map((chat, index) => (
-                    <div key={index}>{formatChat(chat)}</div>
-                ))}
+                <Comment.Group>{chat.map(formatChat)}</Comment.Group>
             </Container>
         );
     }

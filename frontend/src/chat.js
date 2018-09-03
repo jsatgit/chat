@@ -40,10 +40,20 @@ const NavigationContainer = styled.div`
 `;
 
 export default class Chat extends React.PureComponent {
+    switchRoom = async room => {
+        const chat = await this.fetchChat(room.id);
+        this.setState({ chat: List(chat), currentRoom: room });
+        this.socket.emit("joinRoom", {
+            previousRoom: this.state.currentRoom,
+            currentRoom: room
+        });
+    };
+
     addRoom = async name => {
         const response = await post("/api/room", { name });
         const room = await response.json();
         this.setState({ rooms: this.state.rooms.push(room) });
+        this.switchRoom(room);
     };
 
     addMessage = (message, username) => {
@@ -51,15 +61,6 @@ export default class Chat extends React.PureComponent {
             room: this.state.currentRoom.id,
             sender: username,
             message
-        });
-    };
-
-    switchRoom = async room => {
-        const chat = await this.fetchChat(room.id);
-        this.setState({ chat: List(chat), currentRoom: room });
-        this.socket.emit("joinRoom", {
-            previousRoom: this.state.currentRoom,
-            currentRoom: room
         });
     };
 

@@ -3,7 +3,10 @@ const app = require("./app");
 const { verify } = require("./google");
 const bodyParser = require("body-parser");
 const express = require("express");
+const favicon = require('serve-favicon')
+const path = require('path')
 
+app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')))
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
@@ -32,6 +35,7 @@ app.post("/api/login", async function(req, res) {
         res.setHeader("Content-Type", "application/json");
         res.send(JSON.stringify(user));
     } catch (err) {
+        console.error(err)
         return res.sendStatus(401);
     }
 });

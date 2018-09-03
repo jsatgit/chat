@@ -1,18 +1,32 @@
 import React from "react";
+import styled from "styled-components";
 
 import Input from "./input";
-import { withContext, ChatContext, UserContext } from "./context";
+import { withContext, ChatContext, UserContext, RoomContext } from "./context";
+
+const Container = styled.div`
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 100%;
+`;
 
 class Footer extends React.PureComponent {
     render() {
-        const { user, addMessage } = this.props;
+        const { user, addMessage, currentRoom } = this.props;
         return (
-            <div>
-                {user.name}:{" "}
-                <Input onSubmit={message => addMessage(message, user.name)} />
-            </div>
+            <Container>
+                <Input
+                    forceFocus
+                    placeholder={`Message ${currentRoom &&
+                        currentRoom.name} room`}
+                    onSubmit={message => addMessage(message, user.name)}
+                />
+            </Container>
         );
     }
 }
 
-export default withContext(UserContext, withContext(ChatContext, Footer));
+export default withContext(
+    RoomContext,
+    withContext(UserContext, withContext(ChatContext, Footer))
+);
