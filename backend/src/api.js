@@ -14,6 +14,12 @@ app.get("/", function(req, res) {
     res.send("Welcome to chat!");
 });
 
+function sendJson(res, obj) {
+    res.setHeader("Content-Type", "application/json");
+    res.send(JSON.stringify(obj));
+    return res;
+}
+
 app.post("/api/login", async function(req, res) {
     if (!req.body) {
         return res.sendStatus(400);
@@ -32,8 +38,7 @@ app.post("/api/login", async function(req, res) {
         
         console.log(`${name} logged in`);
 
-        res.setHeader("Content-Type", "application/json");
-        res.send(JSON.stringify(user));
+        sendJson(res, user);
     } catch (err) {
         console.error(err)
         return res.sendStatus(401);
@@ -41,9 +46,9 @@ app.post("/api/login", async function(req, res) {
 });
 
 app.get("/api/rooms", async function(req, res) {
-    const rooms = await getRooms();
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify(rooms));
+    const name = req.query.name;
+    const rooms = await getRooms(name);
+    return res.send(JSON.stringify(rooms));
 });
 
 app.post("/api/room", async function(req, res) {
@@ -57,8 +62,8 @@ app.post("/api/room", async function(req, res) {
     }
 
     const room = await createRoom(name);
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify(room));
+
+    sendJson(res, room);
 });
 
 app.get("/api/chat/:room", async function(req, res) {
@@ -68,6 +73,5 @@ app.get("/api/chat/:room", async function(req, res) {
     }
 
     const chat = await getChat(room);
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify(chat));
+    sendJson(res, chat);
 });

@@ -50,6 +50,10 @@ export default class Chat extends React.PureComponent {
     };
 
     addRoom = async name => {
+        if (!name) {
+            return;
+        }
+
         const response = await post("/api/room", { name });
         const room = await response.json();
         this.setState({ rooms: this.state.rooms.push(room) });
@@ -57,6 +61,10 @@ export default class Chat extends React.PureComponent {
     };
 
     addMessage = (message, username) => {
+        if (!message) {
+            return;
+        }
+
         this.socket.emit("message", {
             room: this.state.currentRoom.id,
             sender: username,

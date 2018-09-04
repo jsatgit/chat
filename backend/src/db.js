@@ -8,7 +8,13 @@ const db = pgp({
     password: "pass"
 });
 
-function getRooms() {
+function getRooms(name) {
+    if (name) {
+        return db.any("SELECT id, name FROM room WHERE name = ${name}", {
+            name
+        });
+    }
+
     return db.any("SELECT id, name FROM room");
 }
 
