@@ -61,9 +61,13 @@ app.post("/api/room", async function(req, res) {
         return res.sendStatus(400);
     }
 
-    const room = await createRoom(name);
+    try {
+        const room = await createRoom(name);
+        sendJson(res, room);
+    } catch(err) {
+        res.sendStatus(409);
+    }
 
-    sendJson(res, room);
 });
 
 app.get("/api/chat/:room", async function(req, res) {
