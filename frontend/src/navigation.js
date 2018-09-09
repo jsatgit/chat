@@ -73,6 +73,7 @@ class Navigation extends React.PureComponent {
                 </Menu.Item>
                 {rooms.map((room) => (
                     <Menu.Item
+                        content={room.name}
                         name={room.name}
                         active={currentRoom && room && currentRoom.id === room.id}
                         key={room.id}
