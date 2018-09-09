@@ -42,11 +42,18 @@ const NavigationContainer = styled.div`
 export default class Chat extends React.PureComponent {
     switchRoom = async room => {
         const chat = await this.fetchChat(room.id);
+
+        const roomIdToFind = room.id;
+        if (!this.state.rooms.find(room => room.id === roomIdToFind)) {
+            this.setState({ rooms: this.state.rooms.push(room) });
+        }
+
         this.setState({ chat: List(chat), currentRoom: room });
         this.socket.emit("joinRoom", {
             previousRoom: this.state.currentRoom,
             currentRoom: room
         });
+
     };
 
     addRoom = async name => {
@@ -100,10 +107,6 @@ export default class Chat extends React.PureComponent {
     async componentDidMount() {
         this.socket = io();
         this.socket.on("message", this.onMessage);
-        const rooms = await this.fetchRooms();
-        const [room] = rooms;
-        this.switchRoom(room);
-        this.setState({ rooms: List(rooms) });
     }
 
     getRoomContext() {
