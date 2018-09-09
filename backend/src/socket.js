@@ -16,10 +16,11 @@ io.on("connection", function(socket) {
         io.to(room).emit("message", chat);
     });
 
-    socket.on("joinRoom", function({ previousRoom, currentRoom }) {
+    socket.on("switchRoom", function({ previousRoom, currentRoom }) {
         if (previousRoom) {
             socket.leave(previousRoom.id);
         }
+
         socket.join(currentRoom.id);
         console.log(`${socket.id} joined ${currentRoom.name}`)
     });
