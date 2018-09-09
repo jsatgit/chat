@@ -41,17 +41,20 @@ const NavigationContainer = styled.div`
 
 class Chat extends React.PureComponent {
     switchRoom = async room => {
+        const { currentRoom: oldRoom, rooms } = this.state;
+        const { user } = this.props;
+
         const chat = await this.fetchChat(room.id);
 
         const roomIdToFind = room.id;
-        if (!this.state.rooms.find(room => room.id === roomIdToFind)) {
-            this.setState({ rooms: this.state.rooms.push(room) });
+        if (!rooms.find(room => room.id === roomIdToFind)) {
+            this.setState({ rooms: rooms.push(room) });
         }
 
         this.setState({ chat: List(chat), currentRoom: room });
         this.socket.emit("switchRoom", {
-            user: this.props.user,
-            previousRoom: this.state.currentRoom,
+            user,
+            previousRoom: oldRoom,
             currentRoom: room
         });
 
