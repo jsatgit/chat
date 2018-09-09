@@ -9,22 +9,26 @@ class Navigation extends React.PureComponent {
     state = {
         results: [],
         search: "",
+        isLoading: false,
     }
 
     onSearch = _.debounce(async (roomName) => {
         const encodedRoomName = encodeURIComponent(roomName);
         const response = await fetch(`/api/rooms?name=${encodedRoomName}`);
         if (response.ok) {
+            this.setState({isLoading: false})
+
             const rooms = await response.json()
-            if (rooms.length) {
-                const results = rooms.map(room => ({ id: room.id, title: room.name }))
-                this.setState({results})
-            }
+
+            const results = rooms.length ? 
+                rooms.map(room => ({ id: room.id, title: room.name, key: room.id })) :
+                [{id: -1, title: roomName, key: -1}];
+            this.setState({results})
         }
-    })
+    }, 500)
 
     onSearchChange = (event, {value}) => {
-        this.setState({search: value, results: [{id: -1, title: value}]});
+        this.setState({search: value, isLoading: true});
 
         if (!value) {
             return;
@@ -37,7 +41,6 @@ class Navigation extends React.PureComponent {
         const { search } = this.state;
         const { addRoom } = this.props;
         addRoom(search);
-        this.setState({search: ""});
     }
 
     onResultSelect = (event, { result }) => {
@@ -47,11 +50,12 @@ class Navigation extends React.PureComponent {
             const { switchRoom } = this.props;
             switchRoom({id: result.id, name: result.title});
         }
+        this.setState({search: "", results: []});
     }
 
     render() {
         const { addRoom, rooms, switchRoom, currentRoom } = this.props;
-        const { search, results } = this.state;
+        const { search, results, isLoading } = this.state;
         return (
             <Menu pointing fluid vertical>
                 <Menu.Item>
@@ -64,13 +68,14 @@ class Navigation extends React.PureComponent {
                         onResultSelect={this.onResultSelect}
                         results={results}
                         value={search}
+                        loading={isLoading}
                     />
                 </Menu.Item>
-                {rooms.map((room, index) => (
+                {rooms.map((room) => (
                     <Menu.Item
                         name={room.name}
                         active={currentRoom && room && currentRoom.id === room.id}
-                        key={index}
+                        key={room.id}
                         onClick={() => switchRoom(room)}
                     />
                 ))}
