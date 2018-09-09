@@ -13,6 +13,7 @@
     "dependencies": {
         "immutable": "^3.8.2",
         "js-cookie": "^2.2.0",
+        "lodash": "^4.17.10",
         "react": "^16.0.0",
         "react-dom": "^16.4.2",
         "react-google-login": "^3.2.1",
