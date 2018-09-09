@@ -49,7 +49,7 @@ export default class Chat extends React.PureComponent {
         }
 
         this.setState({ chat: List(chat), currentRoom: room });
-        this.socket.emit("joinRoom", {
+        this.socket.emit("switchRoom", {
             previousRoom: this.state.currentRoom,
             currentRoom: room
         });
@@ -104,9 +104,17 @@ export default class Chat extends React.PureComponent {
         this.setState({ chat: this.state.chat.push(chat) });
     };
 
+    onConnect = () => {
+        const { currentRoom } = this.state;
+        if (currentRoom) {
+            this.socket.emit("switchRoom", {currentRoom});
+        }
+    }
+
     async componentDidMount() {
         this.socket = io();
         this.socket.on("message", this.onMessage);
+        this.socket.on("connect", this.onConnect);
     }
 
     getRoomContext() {
