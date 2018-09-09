@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import styled from "styled-components";
 import { List } from "immutable";
 
-import { RoomContext, ChatContext } from "./context";
+import { RoomContext, ChatContext, UserContext, withContext } from "./context";
 import Navigation from "./navigation";
 import Content from "./content";
 import Footer from "./footer";
@@ -39,7 +39,7 @@ const NavigationContainer = styled.div`
     grid-area: navigation;
 `;
 
-export default class Chat extends React.PureComponent {
+class Chat extends React.PureComponent {
     switchRoom = async room => {
         const chat = await this.fetchChat(room.id);
 
@@ -50,6 +50,7 @@ export default class Chat extends React.PureComponent {
 
         this.setState({ chat: List(chat), currentRoom: room });
         this.socket.emit("switchRoom", {
+            user: this.props.user,
             previousRoom: this.state.currentRoom,
             currentRoom: room
         });
@@ -73,7 +74,7 @@ export default class Chat extends React.PureComponent {
         }
 
         this.socket.emit("message", {
-            room: this.state.currentRoom.id,
+            room: this.state.currentRoom,
             sender: username,
             message
         });
@@ -105,9 +106,10 @@ export default class Chat extends React.PureComponent {
     };
 
     onConnect = () => {
+        const { user } = this.props;
         const { currentRoom } = this.state;
         if (currentRoom) {
-            this.socket.emit("switchRoom", {currentRoom});
+            this.socket.emit("switchRoom", {user, currentRoom});
         }
     }
 
@@ -150,3 +152,5 @@ export default class Chat extends React.PureComponent {
         );
     }
 }
+
+export default withContext(UserContext, Chat);

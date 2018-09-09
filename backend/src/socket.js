@@ -10,18 +10,18 @@ io.on("connection", function(socket) {
     });
 
     socket.on("message", function({ room, sender, message }) {
-        const chat = { room, sender, message };
-        console.log(`[${room}] ${sender}: ${message}`)
+        const chat = { room: room.id, sender, message };
+        console.log(`[${room.name}] ${sender}: ${message}`)
         createChat(chat);
-        io.to(room).emit("message", chat);
+        io.to(room.id).emit("message", chat);
     });
 
-    socket.on("switchRoom", function({ previousRoom, currentRoom }) {
+    socket.on("switchRoom", function({ user, previousRoom, currentRoom }) {
         if (previousRoom) {
             socket.leave(previousRoom.id);
         }
 
         socket.join(currentRoom.id);
-        console.log(`${socket.id} joined ${currentRoom.name}`)
+        console.log(`${user.name} joined ${currentRoom.name}`)
     });
 });
