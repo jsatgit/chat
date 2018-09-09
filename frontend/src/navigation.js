@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Label, Menu } from "semantic-ui-react";
+import { Search, Label, Menu, Button } from "semantic-ui-react";
 import _ from "lodash";
 
 import Input from "./input";
@@ -7,21 +7,40 @@ import { withContext, RoomContext } from "./context";
 
 class Navigation extends React.PureComponent {
     state = {
-        results: []
+        results: [],
+        search: "",
     }
 
-    onSearchChange = async (event, {value}) => {
-        if (!value) {
-            return;
-        }
-
-        const encodedRoomName = encodeURIComponent(value);
+    onSearch = _.debounce(async (roomName) => {
+        const encodedRoomName = encodeURIComponent(roomName);
         const response = await fetch(`/api/rooms?name=${encodedRoomName}`);
         if (response.ok) {
             const rooms = await response.json()
             const results = rooms.map(room => ({ id: room.id, title: room.name }))
             this.setState({results})
         }
+    })
+
+    onSearchChange = (event, {value}) => {
+        this.setState({search: value});
+
+        if (!value) {
+            return;
+        }
+
+        this.onSearch(value);
+    }
+
+    addRoom = () => {
+        const { search } = this.state;
+        const { addRoom } = this.props;
+        addRoom(search);
+        this.setState({search: ""});
+    }
+
+    getNoResultsMessage() {
+        const { search } = this.state;
+        return <Button onClick={this.addRoom}>Add {search}</Button>;
     }
 
     onResultSelect = (event, { result }) => {
@@ -31,16 +50,18 @@ class Navigation extends React.PureComponent {
 
     render() {
         const { addRoom, rooms, switchRoom, currentRoom } = this.props;
+        const { search, results } = this.state;
         return (
             <Menu pointing fluid vertical>
                 <Menu.Item>
                     <Search 
                         fluid 
-                        noResultsMessage="no results found"
+                        noResultsMessage={this.getNoResultsMessage()}
                         placeholder="Search rooms"
-                        onSearchChange={_.debounce(this.onSearchChange, 500)}
+                        onSearchChange={this.onSearchChange}
                         onResultSelect={this.onResultSelect}
-                        results={this.state.results}
+                        results={results}
+                        value={search}
                     />
                 </Menu.Item>
                 {rooms.map((room, index) => (
