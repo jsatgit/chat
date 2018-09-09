@@ -25,7 +25,7 @@ function createRoom(name) {
 }
 
 function getChat(room) {
-    return db.any("SELECT message, sender FROM chat WHERE room = ${room}", {
+    return db.any("SELECT message, sender FROM chat WHERE room = ${room} LIMIT 100", {
         room
     });
 }
