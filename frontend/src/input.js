@@ -48,6 +48,10 @@ export default class Input extends React.PureComponent {
         }
     }
 
+    componentDidMount() {
+        this.focus();
+    }
+
     render() {
         return (
             <SemanticInput
