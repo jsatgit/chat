@@ -15,12 +15,13 @@ class Footer extends React.PureComponent {
         const { user, addMessage, currentRoom } = this.props;
         return (
             <Container>
-                <Input
-                    forceFocus
-                    placeholder={`Message ${currentRoom &&
-                        currentRoom.name} room`}
-                    onSubmit={message => addMessage(message, user.name)}
-                />
+                { currentRoom &&
+                    <Input
+                        forceFocus
+                        placeholder={`Message ${currentRoom.name} room`}
+                        onSubmit={message => addMessage(message, user.name)}
+                    />
+                }
             </Container>
         );
     }

@@ -16,13 +16,15 @@ class Navigation extends React.PureComponent {
         const response = await fetch(`/api/rooms?name=${encodedRoomName}`);
         if (response.ok) {
             const rooms = await response.json()
-            const results = rooms.map(room => ({ id: room.id, title: room.name }))
-            this.setState({results})
+            if (rooms.length) {
+                const results = rooms.map(room => ({ id: room.id, title: room.name }))
+                this.setState({results})
+            }
         }
     })
 
     onSearchChange = (event, {value}) => {
-        this.setState({search: value});
+        this.setState({search: value, results: [{id: -1, title: value}]});
 
         if (!value) {
             return;
@@ -38,14 +40,13 @@ class Navigation extends React.PureComponent {
         this.setState({search: ""});
     }
 
-    getNoResultsMessage() {
-        const { search } = this.state;
-        return <Button onClick={this.addRoom}>Add {search}</Button>;
-    }
-
     onResultSelect = (event, { result }) => {
-        const { switchRoom } = this.props;
-        switchRoom({id: result.id, name: result.title});
+        if (result.id === -1) {
+            this.addRoom();
+        } else {
+            const { switchRoom } = this.props;
+            switchRoom({id: result.id, name: result.title});
+        }
     }
 
     render() {
@@ -56,8 +57,9 @@ class Navigation extends React.PureComponent {
                 <Menu.Item>
                     <Search 
                         fluid 
-                        noResultsMessage={this.getNoResultsMessage()}
                         placeholder="Search rooms"
+                        showNoResults={false}
+                        selectFirstResult
                         onSearchChange={this.onSearchChange}
                         onResultSelect={this.onResultSelect}
                         results={results}
