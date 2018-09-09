@@ -10,7 +10,11 @@ const Container = styled.div`
     height: 100%;
 `;
 
-class Footer extends React.PureComponent {
+class Footer extends React.Component {
+    shouldComponentUpdate(nextProps) {
+        return this.props.currentRoom !== nextProps.currentRoom;
+    }
+
     render() {
         const { user, addMessage, currentRoom } = this.props;
         return (
