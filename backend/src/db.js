@@ -1,11 +1,12 @@
 const pgp = require("pg-promise")();
+const config = require('config');
 
 const db = pgp({
-    host: "localhost",
-    port: 5432,
-    database: "chatdb",
-    user: "postgres",
-    password: "pass"
+    host: config.get("db.host"),
+    port: config.get("db.port"),
+    database: config.get("db.database"),
+    user: config.get("db.user"),
+    password: config.get("db.password")
 });
 
 function getRooms(name) {
