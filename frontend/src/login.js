@@ -1,12 +1,12 @@
 import React from "react";
 import { GoogleLogin } from "react-google-login";
-import { Redirect } from "react-router";
 import Cookies from "js-cookie";
 import { Header } from "semantic-ui-react";
 import styled from "styled-components";
 
 import { post } from "./api";
 import { withContext, UserContext } from "./context";
+import Chat from "./chat";
 
 const Container = styled.div`
     height: 100%;
@@ -66,7 +66,7 @@ class Login extends React.PureComponent {
                     </Container>
                 );
             case "authenticated":
-                return <Redirect to="/chat" />;
+                return <Chat />;
             default:
                 return null;
         }
