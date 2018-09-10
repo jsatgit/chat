@@ -1,10 +1,13 @@
-const { getRooms, createRoom, getChat } = require("./db");
+const { getRooms, getAllRooms, createRoom, getChat } = require("./db");
 const app = require("./app");
 const { verify } = require("./google");
 const bodyParser = require("body-parser");
 const express = require("express");
 const favicon = require('serve-favicon')
 const path = require('path')
+const jwt = require('express-jwt');
+const config = require('config');
+
 
 app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')))
 app.use(bodyParser.json());
@@ -45,10 +48,17 @@ app.post("/api/login", async function(req, res) {
     }
 });
 
+app.get("/api/allrooms", 
+    jwt({secret: config.get('jwtSecret')}),
+    async function(req, res) {
+    const rooms = await getAllRooms();
+    sendJson(res, rooms);
+});
+
 app.get("/api/rooms", async function(req, res) {
     const name = req.query.name;
     const rooms = await getRooms(name);
-    return res.send(JSON.stringify(rooms));
+    sendJson(res, rooms);
 });
 
 app.post("/api/room", async function(req, res) {

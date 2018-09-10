@@ -9,12 +9,12 @@ const db = pgp({
 });
 
 function getRooms(name) {
-    if (name) {
-        return db.any("SELECT id, name FROM room WHERE name = ${name}", {
-            name
-        });
-    }
+    return db.any("SELECT id, name FROM room WHERE name = ${name}", {
+        name
+    });
+}
 
+function getAllRooms() {
     return db.any("SELECT id, name FROM room");
 }
 
@@ -41,4 +41,4 @@ function createChat({ room, message, sender }) {
     );
 }
 
-module.exports = { getRooms, createRoom, getChat, createChat };
+module.exports = { getRooms, getAllRooms, createRoom, getChat, createChat };
