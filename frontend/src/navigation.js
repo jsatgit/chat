@@ -37,6 +37,14 @@ class Navigation extends React.PureComponent {
         this.onSearch(value);
     }
 
+    focus() {
+        this.searchRef.focus();
+    }
+
+    componentDidMount() {
+        this.focus();
+    }
+
     addRoom = () => {
         const { search } = this.state;
         const { addRoom } = this.props;
@@ -60,6 +68,7 @@ class Navigation extends React.PureComponent {
             <Menu pointing fluid vertical>
                 <Menu.Item>
                     <Search 
+                        input={{ref: searchRef => (this.searchRef = searchRef)}}
                         fluid 
                         placeholder="Search rooms"
                         showNoResults={false}

@@ -12,7 +12,7 @@ class App extends React.PureComponent {
     };
 
     state = {
-        user: { name: "lama" },
+        user: { name: null },
         updateUser: this.updateUser
     };
 
