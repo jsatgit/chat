@@ -2,8 +2,8 @@
     "dev": {
         "driver": "pg",
         "user": "postgres",
-        "password": "pass",
+        "password": "",
         "host": "localhost",
-        "database": "chatdb"
+        "database": "postgres"
     }
 }

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run -it --rm --link chatdb:postgres postgres psql chatdb -h postgres -U postgres
+docker exec -it chatdb psql -U postgres
