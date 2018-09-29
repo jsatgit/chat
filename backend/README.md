@@ -45,8 +45,14 @@ In `database.json`:
 }
 ```
 
-## Run
+## Development
 
 ```
-npm start
+npm dev
+```
+
+## Production
+
+```
+docker-compose up
 ```
