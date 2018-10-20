@@ -1,6 +1,6 @@
 ## Prerequisites
 
-* (Docker)[https://www.docker.com/]
+* [docker](https://www.docker.com/)
 
 ## Install
 
