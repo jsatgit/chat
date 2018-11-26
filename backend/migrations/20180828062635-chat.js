@@ -19,7 +19,7 @@ exports.up = function(db) {
         id: { type: 'int', primaryKey: true, autoIncrement: true },
         message: 'string',
         sender: 'string',
-        room: 'int'
+        room: 'string'
     });
 };
 
