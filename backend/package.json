@@ -4,24 +4,26 @@
     "description": "backend for chat",
     "main": "src/index.js",
     "scripts": {
-        "start": "node src/index.js",
-        "dev": "nodemon src/index.js",
+        "start": "NODE_ENV=prod node src/index.js",
+        "dev": "NODE_ENV=loc nodemon src/index.js",
         "style": "prettier --write src/**/*.js",
-        "migrate": "db-migrate up"
+        "migrate:prod": "db-migrate up -e prod",
+        "migrate:local": "db-migrate up -e local"
     },
     "author": "James Shi",
     "license": "ISC",
     "dependencies": {
         "body-parser": "^1.18.3",
-        "config": "^2.0.1",
+        "config": "^3.0.0",
+        "db-migrate": "^0.11.1",
+        "db-migrate-pg": "^0.4.0",
         "express": "^4.16.3",
         "express-jwt": "^5.3.1",
         "google-auth-library": "^1.6.1",
         "pg-promise": "^8.4.6",
         "serve-favicon": "^2.5.0",
         "socket.io": "^2.1.1",
-        "db-migrate": "^0.11.1",
-        "db-migrate-pg": "^0.4.0"
+        "uuid": "^3.3.2"
     },
     "devDependencies": {
         "nodemon": "^1.18.4",

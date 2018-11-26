@@ -16,6 +16,6 @@ services:
     migration:
         image: webapp
         container_name: migration 
-        command: npm run migrate
+        command: npm run migrate:prod
         depends_on:
             - db
