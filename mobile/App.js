@@ -1,54 +1,76 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'
 import { SafeAreaView } from 'react-native';
+import SocketIOClient from 'socket.io-client';
+import uuid from 'uuid/v4';
 
+const mapConvoToMessage = (convo) => ({
+    _id: uuid(),
+    text: convo.message,
+    user: {
+        _id: convo.sender, 
+        name: convo.sender,
+    }
+})
 
-type Props = {};
+export default class App extends Component {
 
-export default class App extends Component<Props> {
     state = {
+        isLoadingEarlier: true,
         messages: [],
     }
 
-    async componentWillMount() {
+    onMessage = chat => {
+        const message = mapConvoToMessage(chat)
+        this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, [message]),
+        }))
+    }
+
+    async componentDidMount() {
+        this.socket = SocketIOClient("http://stoma.xyz");
+        this.socket.on("message", this.onMessage)
+        this.socket.emit("switchRoom", {
+            user: {
+                name: "jshi"
+            },
+            currentRoom: {
+                uuid: "a5a73fac-b84c-4777-b687-8d2d84af36aa",
+                name: "stoma"
+            },
+        })
+
         const result = await fetch("http://stoma.xyz/api/chat/a5a73fac-b84c-4777-b687-8d2d84af36aa")
         const convo = await result.json();
+        convo.reverse();
         this.setState({
-            messages: convo.map((convo, index) => ({
-                _id: index,
-                text: convo.message,
-                user: { 
-                    _id: convo.sender,
-                    name: convo.sender 
-                }
-            }))
+            isLoadingEarlier: false,
+            messages: convo.map(mapConvoToMessage)
         })
     }
 
     onSend(messages = []) {
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, messages),
-        }))
+        messages.forEach(message => {
+            const { user, text } = message;
+            this.socket.emit("message", {
+                room: {
+                    uuid: "a5a73fac-b84c-4777-b687-8d2d84af36aa",
+                    name: "stoma"
+                },
+                sender: user._id,
+                message: text, 
+            });
+        })
     }
 
     render() {
+        const { isLoadingEarlier, messages } = this.state;
+
         return (
-            <SafeAreaView style={{
-                flex: 1,
-                flexDirection: 'column',
-                alignItems: 'stretch',
-                marginHorizontal: 10
-            }}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <GiftedChat
-                    messages={this.state.messages}
+                    isLoadingEarlier={isLoadingEarlier}
+                    messages={messages}
                     onSend={messages => this.onSend(messages)}
                     user={{
                         _id: "jshi",
