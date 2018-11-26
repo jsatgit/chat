@@ -21,7 +21,7 @@ class Navigation extends React.PureComponent {
             const rooms = await response.json()
 
             const results = rooms.length ? 
-                rooms.map(room => ({ id: room.id, title: room.name, key: room.id })) :
+                rooms.map(room => ({ id: room.uuid, title: room.name, key: room.uuid })) :
                 [{id: -1, title: roomName, key: -1}];
             this.setState({results})
         }
@@ -56,7 +56,7 @@ class Navigation extends React.PureComponent {
             this.addRoom();
         } else {
             const { switchRoom } = this.props;
-            switchRoom({id: result.id, name: result.title});
+            switchRoom({uuid: result.id, name: result.title});
         }
         this.setState({search: "", results: []});
     }
@@ -84,8 +84,8 @@ class Navigation extends React.PureComponent {
                     <Menu.Item
                         content={room.name}
                         name={room.name}
-                        active={currentRoom && room && currentRoom.id === room.id}
-                        key={room.id}
+                        active={currentRoom && room && currentRoom.uuid === room.uuid}
+                        key={room.uuid}
                         onClick={() => switchRoom(room)}
                     />
                 ))}

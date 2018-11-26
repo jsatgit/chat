@@ -44,10 +44,10 @@ class Chat extends React.PureComponent {
         const { currentRoom: oldRoom, rooms } = this.state;
         const { user } = this.props;
 
-        const chat = await this.fetchChat(room.id);
+        const chat = await this.fetchChat(room.uuid);
 
-        const roomIdToFind = room.id;
-        if (!rooms.find(room => room.id === roomIdToFind)) {
+        const roomIdToFind = room.uuid;
+        if (!rooms.find(room => room.uuid === roomIdToFind)) {
             this.setState({ rooms: rooms.push(room) });
         }
 

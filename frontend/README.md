@@ -10,3 +10,5 @@
 ```
     npm start
 ```
+
+Go to `localhost:1234`
