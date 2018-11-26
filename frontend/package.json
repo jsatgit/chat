@@ -24,14 +24,17 @@
         "styled-components": "^3.4.2"
     },
     "devDependencies": {
+        "babel-core": "^6.26.3",
         "babel-plugin-transform-class-properties": "^6.24.1",
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-plugin-transform-react-jsx": "^6.24.1",
         "babel-polyfill": "^6.26.0",
+        "babel-preset-env": "^1.7.0",
         "core-js": "^2.5.7",
         "express": "^4.16.3",
         "http-proxy-middleware": "^0.18.0",
-        "parcel": "^1.9.7",
-        "parcel-bundler": "^1.9.7",
+        "parcel": "^1.10.3",
+        "parcel-bundler": "^1.10.3",
         "prettier": "^1.14.2"
     }
 }
