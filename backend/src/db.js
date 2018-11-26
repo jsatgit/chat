@@ -1,5 +1,6 @@
 const pgp = require("pg-promise")();
 const config = require('config');
+const uuidv4 = require('uuid/v4');
 
 const db = pgp({
     host: config.get("db.host"),
@@ -10,18 +11,19 @@ const db = pgp({
 });
 
 function getRooms(name) {
-    return db.any("SELECT id, name FROM room WHERE name = ${name}", {
+    return db.any("SELECT id, uuid, name FROM room WHERE name = ${name}", {
         name
     });
 }
 
 function getAllRooms() {
-    return db.any("SELECT id, name FROM room");
+    return db.any("SELECT id, uuid, name FROM room");
 }
 
 function createRoom(name) {
-    return db.one("INSERT INTO room(name) VALUES(${name}) RETURNING id, name", {
-        name
+    const uuid = uuidv4();
+    return db.one("INSERT INTO room(uuid, name) VALUES(${uuid}, ${name}) RETURNING id, uuid, name", {
+        uuid, name
     });
 }
 

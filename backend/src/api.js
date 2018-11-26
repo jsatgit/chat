@@ -75,6 +75,7 @@ app.post("/api/room", async function(req, res) {
         const room = await createRoom(name);
         sendJson(res, room);
     } catch(err) {
+        console.error(err)
         res.sendStatus(409);
     }
 
