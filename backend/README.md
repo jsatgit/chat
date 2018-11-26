@@ -12,10 +12,11 @@ npm install -D
 
 ```
 mkdir config 
-touch default.json
+touch loc.json
+touch prod.json
 ```
 
-Configuration:
+For each environment add the following configuration:
 ```
 {
     "jwtSecret": <secret-goes-here>,
@@ -31,11 +32,18 @@ Configuration:
 
 ## Database
 
-In `database.json`:
+Configure the database in `database.json`:
 
 ```
 {
-    "dev": {
+    "local": {
+        "driver": <>,
+        "user": <>,
+        "password": <>,
+        "host": <>,
+        "database": <> 
+    },
+    "prod": {
         "driver": <>,
         "user": <>,
         "password": <>,
@@ -45,10 +53,12 @@ In `database.json`:
 }
 ```
 
+Start the local database: `./scripts/db/start.sh`
+
 ## Development
 
 ```
-npm dev
+npm run dev
 ```
 
 ## Production
