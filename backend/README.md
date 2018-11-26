@@ -61,8 +61,12 @@ Start the local database: `./scripts/db/start.sh`
 npm run dev
 ```
 
+Go to `localhost:3000`
+
 ## Production
 
 ```
 docker-compose up
 ```
+
+Go to `localhost:3000`

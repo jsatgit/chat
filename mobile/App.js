@@ -7,45 +7,39 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View, Button, KeyboardAvoidingView, SafeAreaView, ScrollView } from 'react-native';
+import { GiftedChat } from 'react-native-gifted-chat'
+import { SafeAreaView } from 'react-native';
 
-const content = [1,2,3,4,5,6,7,8,9,10]
 
 type Props = {};
 
-const styles = {
-    container: {
-        flex: 1
-    },
-    keyboardAvoidContainer: {
-        flex: 1,
-        backgroundColor: 'orange'
-    }
-}
-
 export default class App extends Component<Props> {
     state = {
-        text: "",
-        convos: [],
-    };
-
-    async componentDidMount() {
-        const result = await fetch("http://stoma.xyz/api/chat/1");
-        const convos = await result.json();
-        this.setState({convos});
+        messages: [],
     }
 
-    onPress = () => {
-        const { convos, text } = this.state;
+    async componentWillMount() {
+        const result = await fetch("http://stoma.xyz/api/chat/a5a73fac-b84c-4777-b687-8d2d84af36aa")
+        const convo = await result.json();
         this.setState({
-            text: "",
-            convos: [...convos, {sender: "james", message: text}],
+            messages: convo.map((convo, index) => ({
+                _id: index,
+                text: convo.message,
+                user: { 
+                    _id: convo.sender,
+                    name: convo.sender 
+                }
+            }))
         })
-    };
+    }
+
+    onSend(messages = []) {
+        this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, messages),
+        }))
+    }
 
     render() {
-        const { convos, text } = this.state;
-
         return (
             <SafeAreaView style={{
                 flex: 1,
@@ -53,50 +47,14 @@ export default class App extends Component<Props> {
                 alignItems: 'stretch',
                 marginHorizontal: 10
             }}>
-                <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
-                    <ScrollView 
-                        style={{flex: 1}}
-                        ref={ref => this.scrollView = ref}
-                        onContentSizeChange={(contentWidth, contentHeight)=> {
-                            this.scrollView.scrollToEnd({animated: true});
-                        }}
-                    >
-                        {convos.map((convo, index) => {
-                            return <Text style={{padding: 2, fontSize: 14}} key={index}>{convo.message}</Text>;
-                        })}
-                    </ScrollView>
-                    <View style={{
-                        flexDirection: "row",
-                        alignItems: "center"
-                    }}>
-                        <TextInput 
-                            style={{
-                                height: 30,
-                                flex: 1,
-                                borderLeftWidth: 1,
-                                borderRightWidth: 1,
-                                borderTopWidth: 1,
-                                borderBottomWidth: 1,
-                                borderTopLeftRadius: 10,
-                                borderTopRightRadius: 10,
-                                borderBottomRightRadius: 10,
-                                borderBottomLeftRadius: 10,
-                                borderColor: '#F2F2F2',
-                                backgroundColor: "#F2F2F2"
-                            }}
-                            value={text}
-                            multiline
-                            placeholder="Type here"
-                            onChangeText={(text) => this.setState({text})}
-                        />
-                        <Button
-                            title="Send"
-                            style={{width: 50}}
-                            onPress={this.onPress}
-                        />
-                    </View>
-                </KeyboardAvoidingView>
+                <GiftedChat
+                    messages={this.state.messages}
+                    onSend={messages => this.onSend(messages)}
+                    user={{
+                        _id: "jshi",
+                    }}
+                />
             </SafeAreaView>
-        );
+        )
     }
 }
