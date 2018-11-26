@@ -19,6 +19,12 @@ export default class Conversation extends Component {
         isLoadingEarlier: true,
         messages: [],
     }
+    static navigationOptions = ({ navigation }) => {
+        const room = navigation.getParam('room');
+        return {
+            title: room.name,
+        };
+    };
 
     onMessage = chat => {
         const message = mapConvoToMessage(chat)
@@ -33,22 +39,31 @@ export default class Conversation extends Component {
     }
 
     async componentDidMount() {
-        const currentRoom = this.getCurrentRoom();
+        const room = this.getCurrentRoom();
         this.socket = SocketIOClient("http://stoma.xyz");
         this.socket.on("message", this.onMessage)
-        this.socket.emit("switchRoom", {
+        this.socket.emit("joinRoom", {
             user: {
                 name: "jshi"
             },
-            currentRoom,
+            room,
         })
 
-        const result = await fetch(`http://stoma.xyz/api/chat/${currentRoom.uuid}`)
+        const result = await fetch(`http://stoma.xyz/api/chat/${room.uuid}`)
         const convo = await result.json();
         convo.reverse();
         this.setState({
             isLoadingEarlier: false,
             messages: convo.map(mapConvoToMessage)
+        })
+    }
+
+    componentWillUnmount() {
+        this.socket.emit("leaveRoom", {
+            user: {
+                name: "jshi"
+            },
+            room: this.getCurrentRoom(),
         })
     }
 
