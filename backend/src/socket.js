@@ -5,6 +5,16 @@ const io = require("socket.io")(server);
 io.on("connection", function(socket) {
     console.log(`${socket.id} connected`)
 
+    function joinRoom(user, room) {
+        socket.join(room.uuid);
+        console.log(`${user.name} joined ${room.name}`)
+    }
+
+    function leaveRoom(user, room) {
+        socket.leave(room.uuid);
+        console.log(`${user.name} left ${room.name}`)
+    }
+
     socket.on('disconnect', function () {
         console.log(`${socket.id} disconnected`)
     });
@@ -18,10 +28,17 @@ io.on("connection", function(socket) {
 
     socket.on("switchRoom", function({ user, previousRoom, currentRoom }) {
         if (previousRoom) {
-            socket.leave(previousRoom.uuid);
+            leaveRoom(user, previousRoom)
         }
 
-        socket.join(currentRoom.uuid);
-        console.log(`${user.name} joined ${currentRoom.name}`)
+        joinRoom(user, currentRoom)
+    });
+
+    socket.on("joinRoom", function({ user, room }) {
+        joinRoom(user, room)
+    });
+
+    socket.on("leaveRoom", function({ user, room }) {
+        leaveRoom(user, room)
     });
 });
