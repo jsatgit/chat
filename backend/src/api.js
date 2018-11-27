@@ -3,13 +3,12 @@ const app = require("./app");
 const { verify } = require("./google");
 const bodyParser = require("body-parser");
 const express = require("express");
-const favicon = require('serve-favicon')
-const path = require('path')
-const jwt = require('express-jwt');
-const config = require('config');
+const favicon = require("serve-favicon");
+const path = require("path");
+const jwt = require("express-jwt");
+const config = require("config");
 
-
-app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')))
+app.use(favicon(path.join(__dirname, "../public", "favicon.ico")));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
@@ -38,22 +37,24 @@ app.post("/api/login", async function(req, res) {
         const payload = ticket.getPayload();
         const { name, email, picture, locale } = payload;
         const user = { name };
-        
-        console.log({name, email, picture, locale}, "logged in");
+
+        console.log({ name, email, picture, locale }, "logged in");
 
         sendJson(res, user);
     } catch (err) {
-        console.error(err)
+        console.error(err);
         return res.sendStatus(401);
     }
 });
 
-app.get("/api/allrooms", 
-    jwt({secret: config.get('jwtSecret')}),
+app.get(
+    "/api/allrooms",
+    jwt({ secret: config.get("jwtSecret") }),
     async function(req, res) {
-    const rooms = await getAllRooms();
-    sendJson(res, rooms);
-});
+        const rooms = await getAllRooms();
+        sendJson(res, rooms);
+    }
+);
 
 app.get("/api/rooms", async function(req, res) {
     const name = req.query.name;
@@ -74,11 +75,10 @@ app.post("/api/room", async function(req, res) {
     try {
         const room = await createRoom(name);
         sendJson(res, room);
-    } catch(err) {
-        console.error(err)
+    } catch (err) {
+        console.error(err);
         res.sendStatus(409);
     }
-
 });
 
 app.get("/api/chat/:room", async function(req, res) {
