@@ -9,33 +9,37 @@ class Navigation extends React.PureComponent {
     state = {
         results: [],
         search: "",
-        isLoading: false,
-    }
+        isLoading: false
+    };
 
-    onSearch = _.debounce(async (roomName) => {
+    onSearch = _.debounce(async roomName => {
         const encodedRoomName = encodeURIComponent(roomName);
         const response = await fetch(`/api/rooms?name=${encodedRoomName}`);
         if (response.ok) {
-            this.setState({isLoading: false})
+            this.setState({ isLoading: false });
 
-            const rooms = await response.json()
+            const rooms = await response.json();
 
-            const results = rooms.length ? 
-                rooms.map(room => ({ id: room.uuid, title: room.name, key: room.uuid })) :
-                [{id: -1, title: roomName, key: -1}];
-            this.setState({results})
+            const results = rooms.length
+                ? rooms.map(room => ({
+                      id: room.uuid,
+                      title: room.name,
+                      key: room.uuid
+                  }))
+                : [{ id: -1, title: roomName, key: -1 }];
+            this.setState({ results });
         }
-    }, 500)
+    }, 500);
 
-    onSearchChange = (event, {value}) => {
-        this.setState({search: value, isLoading: true});
+    onSearchChange = (event, { value }) => {
+        this.setState({ search: value, isLoading: true });
 
         if (!value) {
             return;
         }
 
         this.onSearch(value);
-    }
+    };
 
     focus() {
         this.searchRef.focus();
@@ -49,17 +53,17 @@ class Navigation extends React.PureComponent {
         const { search } = this.state;
         const { addRoom } = this.props;
         addRoom(search);
-    }
+    };
 
     onResultSelect = (event, { result }) => {
         if (result.id === -1) {
             this.addRoom();
         } else {
             const { switchRoom } = this.props;
-            switchRoom({uuid: result.id, name: result.title});
+            switchRoom({ uuid: result.id, name: result.title });
         }
-        this.setState({search: "", results: []});
-    }
+        this.setState({ search: "", results: [] });
+    };
 
     render() {
         const { addRoom, rooms, switchRoom, currentRoom } = this.props;
@@ -67,9 +71,11 @@ class Navigation extends React.PureComponent {
         return (
             <Menu pointing fluid vertical>
                 <Menu.Item>
-                    <Search 
-                        input={{ref: searchRef => (this.searchRef = searchRef)}}
-                        fluid 
+                    <Search
+                        input={{
+                            ref: searchRef => (this.searchRef = searchRef)
+                        }}
+                        fluid
                         placeholder="Search rooms"
                         showNoResults={false}
                         selectFirstResult
@@ -80,11 +86,15 @@ class Navigation extends React.PureComponent {
                         loading={isLoading}
                     />
                 </Menu.Item>
-                {rooms.map((room) => (
+                {rooms.map(room => (
                     <Menu.Item
                         content={room.name}
                         name={room.name}
-                        active={currentRoom && room && currentRoom.uuid === room.uuid}
+                        active={
+                            currentRoom &&
+                            room &&
+                            currentRoom.uuid === room.uuid
+                        }
                         key={room.uuid}
                         onClick={() => switchRoom(room)}
                     />

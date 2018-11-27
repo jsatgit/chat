@@ -19,13 +19,13 @@ class Footer extends React.Component {
         const { user, addMessage, currentRoom } = this.props;
         return (
             <Container>
-                { currentRoom &&
+                {currentRoom && (
                     <Input
                         forceFocus
                         placeholder={`Message ${currentRoom.name} room`}
                         onSubmit={message => addMessage(message, user.name)}
                     />
-                }
+                )}
             </Container>
         );
     }

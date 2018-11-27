@@ -57,7 +57,6 @@ class Chat extends React.PureComponent {
             previousRoom: oldRoom,
             currentRoom: room
         });
-
     };
 
     addRoom = async name => {
@@ -112,9 +111,9 @@ class Chat extends React.PureComponent {
         const { user } = this.props;
         const { currentRoom } = this.state;
         if (currentRoom) {
-            this.socket.emit("switchRoom", {user, currentRoom});
+            this.socket.emit("switchRoom", { user, currentRoom });
         }
-    }
+    };
 
     async componentDidMount() {
         this.socket = io();
