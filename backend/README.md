@@ -11,57 +11,30 @@ npm install -D
 ## Config
 
 ```
-mkdir config 
-touch loc.json
-touch prod.json
-```
-
-For each environment add the following configuration:
-```
-{
-    "jwtSecret": <secret-goes-here>,
-    "db": {
-        "host": <>,
-        "port": <>,
-        "database": <>,
-        "user": <>,
-        "password": <> 
-    }
-}
+cp -r config.template config
 ```
 
 ## Database
 
-Configure the database in `database.json`:
-
 ```
-{
-    "local": {
-        "driver": <>,
-        "user": <>,
-        "password": <>,
-        "host": <>,
-        "database": <> 
-    },
-    "prod": {
-        "driver": <>,
-        "user": <>,
-        "password": <>,
-        "host": <>,
-        "database": <> 
-    }
-}
+cp database.template.json database.json
 ```
 
 Start the local database: `./scripts/db/start.sh`
 
 ## Development
 
+To start the server
+
 ```
 npm run dev
 ```
 
 Go to `localhost:3000`
+
+## Frontend  
+
+To run the frontend as well, copy the frontend build to the `public` directory
 
 ## Production
 

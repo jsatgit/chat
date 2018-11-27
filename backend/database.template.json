@@ -1,0 +1,16 @@
+{
+    "prod": {
+        "driver": "pg",
+        "user": "postgres",
+        "password": "",
+        "host": "chatdb",
+        "database": "postgres"
+    },
+    "local": {
+        "driver": "pg",
+        "user": "postgres",
+        "password": "",
+        "host": "localhost",
+        "database": "postgres"
+    }
+}
