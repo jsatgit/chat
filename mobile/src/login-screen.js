@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { SafeAreaView, Text } from "react-native";
+import { SafeAreaView } from "react-native";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { StackActions, NavigationActions } from "react-navigation";
 

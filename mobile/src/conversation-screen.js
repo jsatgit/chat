@@ -26,13 +26,6 @@ export default class ConversationScreen extends Component {
         };
     };
 
-    onMessage = chat => {
-        const message = mapConvoToMessage(chat);
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, [message])
-        }));
-    };
-
     getCurrentRoom() {
         const { navigation } = this.props;
         return navigation.getParam("room", {});
@@ -42,6 +35,13 @@ export default class ConversationScreen extends Component {
         const { navigation } = this.props;
         return navigation.getParam("user", {});
     }
+
+    onMessage = chat => {
+        const message = mapConvoToMessage(chat);
+        this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, [message])
+        }));
+    };
 
     async componentDidMount() {
         const room = this.getCurrentRoom();

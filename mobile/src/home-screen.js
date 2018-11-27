@@ -19,11 +19,19 @@ async function createRoom(name) {
     return await response.json();
 }
 
+async function searchRooms(roomName) {
+    const encodedRoomName = encodeURIComponent(roomName);
+    const response = await fetch(
+        `http://stoma.xyz/api/rooms?name=${encodedRoomName}`
+    );
+    return await response.json();
+}
+
 export default class HomeScreen extends Component {
     state = {
         isLoading: false,
         isSearching: false,
-        searchRooms: [],
+        roomsFound: [],
         rooms: []
     };
 
@@ -32,77 +40,65 @@ export default class HomeScreen extends Component {
         return navigation.getParam("user", {});
     }
 
+    startSearch() {
+        this.setState({ isLoading: true, isSearching: true });
+    }
+
+    endSearch(roomsFound=[]) {
+        this.setState({ isLoading: false, roomsFound});
+    }
+
+    componentDidMount() {
+        this.props.navigation.addListener('willFocus', this.screenWillFocus);
+    }
+
+    screenWillFocus = () => {
+        this.setState({ isSearching: false });
+    }
+
     _onChangeText = async roomName => {
         if (!roomName) {
-            this.setState({ isSearching: false });
+            this.endSearch();
             return;
         }
 
-        const foundRoom = this.state.rooms.find(room => room.name === roomName);
-        if (foundRoom) {
-            this.setState({ searchRooms: [foundRoom] });
-            return;
-        }
+        this.startSearch();
 
-        this.setState({ isLoading: true, isSearching: true });
-        const encodedRoomName = encodeURIComponent(roomName);
-        const response = await fetch(
-            `http://stoma.xyz/api/rooms?name=${encodedRoomName}`
-        );
-        const rooms = await response.json();
+        const rooms = await searchRooms(roomName);
+        const roomsFound = rooms.length ? rooms : [{name: roomName}];
 
-        const searchRooms = rooms.length > 0 ? rooms : [{ name: roomName }];
-
-        this.setState({ searchRooms, isLoading: false });
+        this.endSearch(roomsFound);
     };
 
     onChangeText = debounce(this._onChangeText, 500);
 
-    renderSearchList() {
+    goToConversation(room) {
         const { navigation } = this.props;
-        const { rooms, searchRooms } = this.state;
-        return searchRooms.map((room, i) => (
+        navigation.navigate("Conversation", {
+            room,
+            user: this.getUser()
+        });
+    }
+
+    onSearchListItemPress = async (room) => {
+        this.search.clear();
+
+        const { rooms } = this.state;
+        const roomToEnter = room.uuid ? room : await createRoom(room.name);
+        const newRooms = rooms.find(existingRoom => existingRoom.uuid === room.uuid) ? rooms : [...rooms, roomToEnter];
+
+        this.setState(
+            { rooms: newRooms, },
+            () => this.goToConversation(roomToEnter)
+        );
+    }
+
+    renderSearchList() {
+        const { roomsFound } = this.state;
+        return roomsFound.map((room, i) => (
             <ListItem
                 key={i}
-                onPress={async () => {
-                    this.search.clear();
-                    if (!room.uuid) {
-                        try {
-                            const createdRoom = await createRoom(room.name);
-                            this.setState(
-                                {
-                                    rooms: [...rooms, createdRoom],
-                                    isSearching: false
-                                },
-                                () => {
-                                    navigation.navigate("Conversation", {
-                                        room: createdRoom,
-                                        user: this.getUser()
-                                    });
-                                }
-                            );
-                        } catch (error) {
-                            this.setState({ isSearching: false });
-                        }
-
-                        return;
-                    }
-                    const newRooms = rooms.find(
-                        existingRoom => existingRoom.name === room
-                    )
-                        ? rooms
-                        : [...rooms, room];
-
-                    this.setState(
-                        { rooms: newRooms, isSearching: false },
-                        () => {
-                            navigation.navigate("Conversation", {
-                                room,
-                                user: this.getUser()
-                            });
-                        }
-                    );
-                }}
+                onPress={() => this.onSearchListItemPress(room)}
                 title={room.name}
             />
         ));
@@ -138,7 +134,7 @@ export default class HomeScreen extends Component {
                     inputContainerStyle={{ backgroundColor: "#e4e5ee" }}
                     inputStyle={{ backgroundColor: "#e4e5ee" }}
                     onChangeText={this.onChangeText}
-                    placeholder="Search..."
+                    placeholder="Search rooms..."
                     showLoading={isLoading}
                 />
                 <View>
