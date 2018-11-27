@@ -1,13 +1,23 @@
 const { OAuth2Client } = require("google-auth-library");
+const config = require('config');
 
-const CLIENT_ID =
-    "320665311927-28nv44ac7jfmbf3g4sejkt616c6gtqms.apps.googleusercontent.com";
-const client = new OAuth2Client(CLIENT_ID);
+const webClientId = config.get('google.webClientId');
+const mobileClientId = config.get('google.mobileClientId');
 
-function verify(token) {
-    return client.verifyIdToken({
+const webClient = new OAuth2Client(webClientId);
+const mobileClient = new OAuth2Client(mobileClientId);
+
+function verify(token, platform="web") {
+    if (platform === "mobile") {
+        return mobileClient.verifyIdToken({
+            idToken: token,
+            audience: mobileClientId 
+        });
+    }
+
+    return webClient.verifyIdToken({
         idToken: token,
-        audience: CLIENT_ID
+        audience: webClientId 
     });
 }
 

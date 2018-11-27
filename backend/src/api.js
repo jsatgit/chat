@@ -28,13 +28,13 @@ app.post("/api/login", async function(req, res) {
         return res.sendStatus(400);
     }
 
-    const token = req.body.token;
+    const { token, platform } = req.body;
     if (!token) {
         return res.sendStatus(400);
     }
 
     try {
-        const ticket = await verify(token);
+        const ticket = await verify(token, platform);
         const payload = ticket.getPayload();
         const { name, email, picture, locale } = payload;
         const user = { name };
