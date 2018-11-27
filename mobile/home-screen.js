@@ -28,6 +28,11 @@ export default class HomeScreen extends Component {
         rooms: []
     }
 
+    getUser() {
+        const { navigation } = this.props; 
+        return navigation.getParam('user', {});
+    }
+
     _onChangeText = async (roomName) => {
         if (!roomName) {
             this.setState({isSearching: false});
@@ -64,7 +69,7 @@ export default class HomeScreen extends Component {
                         try {
                             const createdRoom = await createRoom(room.name);
                             this.setState({rooms: [...rooms, createdRoom], isSearching: false }, () => {
-                                navigation.navigate('Conversation', {room: createdRoom});
+                                navigation.navigate('Conversation', {room: createdRoom, user: this.getUser()});
                             })
                         } catch(error) {
                             this.setState({isSearching: false });
@@ -75,7 +80,7 @@ export default class HomeScreen extends Component {
                     const newRooms = rooms.find(existingRoom => existingRoom.name === room) ? rooms : [...rooms, room];
 
                     this.setState({rooms: newRooms, isSearching: false }, () => {
-                        navigation.navigate('Conversation', {room});
+                        navigation.navigate('Conversation', {room, user: this.getUser()});
                     })
 
                 }}

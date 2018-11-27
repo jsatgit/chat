@@ -19,6 +19,7 @@ export default class Conversation extends Component {
         isLoadingEarlier: true,
         messages: [],
     }
+
     static navigationOptions = ({ navigation }) => {
         const room = navigation.getParam('room');
         return {
@@ -38,13 +39,19 @@ export default class Conversation extends Component {
         return navigation.getParam('room', {});
     }
 
+    getUser() {
+        const { navigation } = this.props; 
+        return navigation.getParam('user', {});
+    }
+
     async componentDidMount() {
         const room = this.getCurrentRoom();
+        const user = this.getUser();
         this.socket = SocketIOClient("http://stoma.xyz");
         this.socket.on("message", this.onMessage)
         this.socket.emit("joinRoom", {
             user: {
-                name: "jshi"
+                name: user.name 
             },
             room,
         })
@@ -59,9 +66,10 @@ export default class Conversation extends Component {
     }
 
     componentWillUnmount() {
+        const user = this.getUser();
         this.socket.emit("leaveRoom", {
             user: {
-                name: "jshi"
+                name: user.name
             },
             room: this.getCurrentRoom(),
         })
@@ -81,6 +89,7 @@ export default class Conversation extends Component {
 
     render() {
         const { isLoadingEarlier, messages } = this.state;
+        const user = this.getUser();
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -89,7 +98,7 @@ export default class Conversation extends Component {
                     messages={messages}
                     onSend={messages => this.onSend(messages)}
                     user={{
-                        _id: "jshi",
+                        _id: user.name,
                     }}
                 />
             </SafeAreaView>
