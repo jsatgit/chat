@@ -9,7 +9,7 @@ import LoginScreen from "./login-screen";
 const AppNavigator = createStackNavigator({
     Login: LoginScreen,
     Home: HomeScreen,
-    Conversation: ConversationScreen 
+    Conversation: ConversationScreen
 });
 
 export default createAppContainer(AppNavigator);

@@ -1,68 +1,67 @@
-import React, {Component} from 'react';
-import { GiftedChat } from 'react-native-gifted-chat'
-import { SafeAreaView } from 'react-native';
-import SocketIOClient from 'socket.io-client';
-import uuid from 'uuid/v4';
+import React, { Component } from "react";
+import { GiftedChat } from "react-native-gifted-chat";
+import { SafeAreaView } from "react-native";
+import SocketIOClient from "socket.io-client";
+import uuid from "uuid/v4";
 
-const mapConvoToMessage = (convo) => ({
+const mapConvoToMessage = convo => ({
     _id: uuid(),
     text: convo.message,
     user: {
-        _id: convo.sender, 
-        name: convo.sender,
+        _id: convo.sender,
+        name: convo.sender
     }
-})
+});
 
 export default class ConversationScreen extends Component {
-
     state = {
         isLoadingEarlier: true,
-        messages: [],
-    }
+        messages: []
+    };
 
     static navigationOptions = ({ navigation }) => {
-        const room = navigation.getParam('room');
+        const room = navigation.getParam("room");
         return {
-            title: room.name,
+            title: room.name
         };
     };
 
     onMessage = chat => {
-        const message = mapConvoToMessage(chat)
+        const message = mapConvoToMessage(chat);
         this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, [message]),
-        }))
-    }
+            messages: GiftedChat.append(previousState.messages, [message])
+        }));
+    };
 
     getCurrentRoom() {
-        const { navigation } = this.props; 
-        return navigation.getParam('room', {});
+        const { navigation } = this.props;
+        return navigation.getParam("room", {});
     }
 
     getUser() {
-        const { navigation } = this.props; 
-        return navigation.getParam('user', {});
+        const { navigation } = this.props;
+        return navigation.getParam("user", {});
     }
 
     async componentDidMount() {
         const room = this.getCurrentRoom();
         const user = this.getUser();
         this.socket = SocketIOClient("http://stoma.xyz");
-        this.socket.on("message", this.onMessage)
+        this.socket.on("message", this.onMessage);
         this.socket.emit("joinRoom", {
             user: {
-                name: user.name 
+                name: user.name
             },
-            room,
-        })
+            room
+        });
 
-        const result = await fetch(`http://stoma.xyz/api/chat/${room.uuid}`)
+        const result = await fetch(`http://stoma.xyz/api/chat/${room.uuid}`);
         const convo = await result.json();
         convo.reverse();
         this.setState({
             isLoadingEarlier: false,
             messages: convo.map(mapConvoToMessage)
-        })
+        });
     }
 
     componentWillUnmount() {
@@ -71,8 +70,8 @@ export default class ConversationScreen extends Component {
             user: {
                 name: user.name
             },
-            room: this.getCurrentRoom(),
-        })
+            room: this.getCurrentRoom()
+        });
     }
 
     onSend(messages = []) {
@@ -82,9 +81,9 @@ export default class ConversationScreen extends Component {
             this.socket.emit("message", {
                 room,
                 sender: user._id,
-                message: text, 
+                message: text
             });
-        })
+        });
     }
 
     render() {
@@ -98,10 +97,10 @@ export default class ConversationScreen extends Component {
                     messages={messages}
                     onSend={messages => this.onSend(messages)}
                     user={{
-                        _id: user.name,
+                        _id: user.name
                     }}
                 />
             </SafeAreaView>
-        )
+        );
     }
 }
