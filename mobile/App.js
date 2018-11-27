@@ -3,13 +3,13 @@ import { View, Text } from "react-native";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
 import HomeScreen from "./home-screen";
-import Conversation from "./Conversation";
+import ConversationScreen from "./conversation-screen";
 import LoginScreen from "./login-screen";
 
 const AppNavigator = createStackNavigator({
     Login: LoginScreen,
     Home: HomeScreen,
-    Conversation 
+    Conversation: ConversationScreen 
 });
 
 export default createAppContainer(AppNavigator);

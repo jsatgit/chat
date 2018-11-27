@@ -13,7 +13,7 @@ const mapConvoToMessage = (convo) => ({
     }
 })
 
-export default class Conversation extends Component {
+export default class ConversationScreen extends Component {
 
     state = {
         isLoadingEarlier: true,
