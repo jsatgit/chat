@@ -52,11 +52,11 @@ export default class LoginScreen extends Component {
     }
 
     render() {
-        const { shouldShowLogin } = this.state;
+        const { showLogin } = this.state;
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                {shouldShowLogin && (
+                {showLogin && (
                     <GoogleSigninButton
                         style={{ height: 48 }}
                         size={GoogleSigninButton.Size.Standard}
